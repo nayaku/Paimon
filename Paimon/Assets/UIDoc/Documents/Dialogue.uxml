@@ -1,0 +1,34 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UIDoc/Styles/Dialogue.uss?fileID=7433441132597879392&amp;guid=3b8f072c356dff74fbb4dd889d392731&amp;type=3#Dialogue" />
+    <engine:VisualElement style="flex-grow: 1; flex-direction: column; align-self: auto;">
+        <engine:VisualElement style="flex-grow: 1; min-height: 100px; max-height: 100px; flex-direction: row;">
+            <engine:VisualElement style="flex-grow: 1; flex-direction: row;">
+                <engine:Button name="HistoryButton" icon-image="project://database/Assets/Graphics/UI/DatingGameUI/Exports/Icons/BackArrow.png?fileID=2800000&amp;guid=0ed23015206545342bb6e00795a5cdef&amp;type=3#BackArrow" class="top-button" />
+            </engine:VisualElement>
+            <engine:VisualElement style="flex-grow: 1; flex-direction: row;" />
+            <engine:VisualElement style="flex-grow: 1; flex-direction: row-reverse;">
+                <engine:Button name="ConfigureButton" icon-image="project://database/Assets/Graphics/UI/DatingGameUI/Exports/Icons/Settings.png?fileID=2800000&amp;guid=e3e9c278370f8754d8343834f7007003&amp;type=3#Settings" class="top-button" />
+            </engine:VisualElement>
+        </engine:VisualElement>
+        <engine:VisualElement style="flex-grow: 1;" />
+        <engine:VisualElement style="flex-grow: 1; max-height: 260px; height: initial; min-height: auto; margin-left: 20px; margin-right: 20px;">
+            <engine:Label text="派蒙" style="-unity-font-style: bold; font-size: 55px; -unity-font-definition: url(&quot;project://database/Assets/TextMesh%20Pro/Fonts/LiberationSans.ttf?fileID=12800000&amp;guid=e3265ab4bf004d28a9537516768c1c75&amp;type=3#LiberationSans&quot;); color: rgb(235, 171, 212); -unity-text-outline-width: 0.8px; margin-left: 40px; margin-bottom: -20px; margin-right: 50px; margin-top: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; -unity-text-outline-color: rgba(255, 255, 255, 0); text-shadow: 1.2px 1.2px 0.8px rgba(73, 32, 101, 0.13); letter-spacing: 10px;">
+                <Bindings>
+                    <engine:DataBinding property="text" data-source-path="Name" data-source-type="DialogueModel, Assembly-CSharp" binding-mode="ToTarget" />
+                </Bindings>
+            </engine:Label>
+            <engine:VisualElement style="flex-grow: 1; margin-left: 0; background-image: url(&quot;project://database/Assets/Graphics/UI/DatingGameUI/Exports/Dialogue/DialogueContainer.png?fileID=2800000&amp;guid=cdf8e96f9d12cfc44b291e613db5927a&amp;type=3#DialogueContainer&quot;); font-size: 70px; align-self: auto; padding-top: 30px; padding-right: 25px; padding-bottom: 35px; padding-left: 28px;">
+                <engine:Label text="你好啊！我是派蒙~\n原神野猪公主全套位置在哪？想必很多小伙伴都知道游戏近期推出了2.7版本，其中尘世巡游第二辑中的野猪公主书籍共七卷全部集齐后解锁成就友谊与牺牲的价值，接下来九游小编就给大家带来了原神野猪公主全套位置攻略，希望能帮助到大家，一起来看看吧。" style="font-size: 24px; margin-top: 10px; margin-left: 10px; margin-right: 10px; -unity-font-definition: url(&quot;project://database/Assets/TextMesh%20Pro/Fonts/LiberationSans.ttf?fileID=12800000&amp;guid=e3265ab4bf004d28a9537516768c1c75&amp;type=3#LiberationSans&quot;); -unity-font-style: normal; white-space: pre-wrap; -unity-text-align: upper-left; padding-right: 1px;">
+                    <Bindings>
+                        <engine:DataBinding property="text" data-source-path="Content" data-source-type="DialogueModel, Assembly-CSharp" binding-mode="ToTarget" />
+                    </Bindings>
+                </engine:Label>
+                <engine:VisualElement name="NextIcon" class="next-button-ani-norm" style="background-image: url(&quot;project://database/Assets/Graphics/UI/DatingGameUI/Exports/NextBtn.png?fileID=2800000&amp;guid=14ae5849030c9aa44b6b1cb95f1a7755&amp;type=3#NextBtn&quot;); width: 50px; height: 50px; transition-duration: 0.4s; transition-timing-function: linear;">
+                    <Bindings>
+                        <engine:DataBinding property="style.display" data-source-path="NextIconDisplayStyle" data-source-type="DialogueModel, Assembly-CSharp" binding-mode="ToTarget" />
+                    </Bindings>
+                </engine:VisualElement>
+            </engine:VisualElement>
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>

@@ -55,21 +55,21 @@ public class MessageDialogModel : MonoBehaviour
         cancelButton.RegisterCallback<PointerDownEvent, ButtonTypeEnum>(OnButtonDown, ButtonTypeEnum.Cancel);
     }
 
-    void OnDisable()
-    {
-        // 解绑事件
-        var rootElement = uiDocument.rootVisualElement;
-        var confirmButton = rootElement.Q<Button>("ConfirmButton");
-        confirmButton.UnregisterCallback<PointerDownEvent, ButtonTypeEnum>(OnButtonDown);
-        var cancelButton = rootElement.Q<Button>("CancelButton");
-        cancelButton.UnregisterCallback<PointerDownEvent, ButtonTypeEnum>(OnButtonDown);
-    }
+    //void OnDisable()
+    //{
+    //    // 解绑事件
+    //    var rootElement = uiDocument.rootVisualElement;
+    //    var confirmButton = rootElement.Q<Button>("ConfirmButton");
+    //    confirmButton.UnregisterCallback<PointerDownEvent, ButtonTypeEnum>(OnButtonDown);
+    //    var cancelButton = rootElement.Q<Button>("CancelButton");
+    //    cancelButton.UnregisterCallback<PointerDownEvent, ButtonTypeEnum>(OnButtonDown);
+    //}
 
-    IEnumerator Start()
-    {
-        yield return new WaitForSeconds(5);
-        MessageDialogModel.Show("Hi", "Content!");
-    }
+    //IEnumerator Start()
+    //{
+    //    yield return new WaitForSeconds(5);
+    //    MessageDialogModel.Show("Hi", "Content!");
+    //}
 
     /// <summary>
     /// 弹出消息框

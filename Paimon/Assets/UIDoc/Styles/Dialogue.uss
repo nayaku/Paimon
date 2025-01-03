@@ -1,0 +1,41 @@
+.top-button {
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    margin-top: 2px;
+    margin-right: 4px;
+    margin-bottom: 2px;
+    margin-left: 4px;
+    padding-top: 25px;
+    padding-right: 19px;
+    padding-bottom: 25px;
+    padding-left: 19px;
+}
+
+#HistoryButton {
+    background-image: url("project://database/Assets/Graphics/UI/DatingGameUI/Exports/VictoryOrDefeat/BlueBtn.png?fileID=2800000&guid=7b67a8395b98d7641b300adf99a579de&type=3#BlueBtn");
+}
+
+#HistoryButton:hover {
+    background-image: url("project://database/Assets/Graphics/UI/DatingGameUI/Exports/VictoryOrDefeat/BlueBtnPressed.png?fileID=2800000&guid=4662df667c47e5c4fa4bfe55ebb7bee3&type=3#BlueBtnPressed");
+}
+
+#ConfigureButton {
+    background-image: url("project://database/Assets/Graphics/UI/DatingGameUI/Exports/GreenBtn.png?fileID=2800000&guid=3553edd740ec778469bca2967076bd30&type=3#GreenBtn");
+}
+
+#ConfigureButton:hover {
+    background-image: url("project://database/Assets/Graphics/UI/DatingGameUI/Exports/GreenBtnPressed.png?fileID=2800000&guid=ae6227b883305b042ada5b2cbf42e05e&type=3#GreenBtnPressed");
+}
+
+.next-button-ani-norm {
+    bottom: 37px;
+    position: absolute;
+    right: 47px;
+}
+
+.next-button-ani-down {
+    bottom: 32px;
+}
