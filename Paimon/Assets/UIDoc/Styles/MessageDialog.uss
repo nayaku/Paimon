@@ -1,0 +1,42 @@
+.message-button {
+    font-size: 20px;
+    padding-left: 70px;
+    padding-right: 70px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    color: rgb(255, 255, 255);
+    text-overflow: clip;
+    -unity-text-align: middle-center;
+    border-left-color: rgba(255, 255, 255, 0);
+    border-right-color: rgba(255, 255, 255, 0);
+    border-top-color: rgba(255, 255, 255, 0);
+    border-bottom-color: rgba(255, 255, 255, 0);
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    white-space: nowrap;
+    letter-spacing: 12px;
+    -unity-font-style: bold;
+    margin-top: 2px;
+    margin-right: 4px;
+    margin-bottom: 2px;
+    margin-left: 4px;
+    background-color: rgba(255, 255, 255, 0);
+}
+
+#ConfirmButton {
+    background-image: url("project://database/Assets/Graphics/UI/DatingGameUI/Exports/VictoryOrDefeat/BlueBtn.png?fileID=2800000&guid=7b67a8395b98d7641b300adf99a579de&type=3#BlueBtn");
+}
+
+#ConfirmButton:hover {
+    background-image: url("project://database/Assets/Graphics/UI/DatingGameUI/Exports/VictoryOrDefeat/BlueBtnPressed.png?fileID=2800000&guid=4662df667c47e5c4fa4bfe55ebb7bee3&type=3#BlueBtnPressed");
+}
+
+#CancelButton {
+    background-image: url("project://database/Assets/Graphics/UI/DatingGameUI/Exports/VictoryOrDefeat/RedBtn.png?fileID=2800000&guid=dd74a8817eb70294597cbbbd74288d71&type=3#RedBtn");
+}
+
+#CancelButton:hover {
+    background-image: url("project://database/Assets/Graphics/UI/DatingGameUI/Exports/VictoryOrDefeat/RedBtnPressed.png?fileID=2800000&guid=aee762d74ba84e54886e403883aaacb1&type=3#RedBtnPressed");
+}

@@ -1,0 +1,38 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UIDoc/Styles/MessageDialog.uss?fileID=7433441132597879392&amp;guid=0bcddf56c76e96744b86e566250066da&amp;type=3#MessageDialog" />
+    <engine:VisualElement name="VisualElement" style="flex-grow: 1; align-self: auto; align-content: auto; justify-content: center; align-items: auto; background-size: 100% 100%; background-color: rgba(255, 255, 255, 0.31); margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 140px; padding-right: 300px; padding-bottom: 140px; padding-left: 300px; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; display: none; transition-duration: 0.2s; opacity: 1; transition-property: opacity; transition-timing-function: linear;">
+        <engine:VisualElement style="flex-grow: 1; align-self: stretch; align-items: stretch; align-content: center; height: 100px; max-height: none; justify-content: center; padding-top: 20px; padding-right: 35px; padding-bottom: 20px; padding-left: 35px; background-color: rgba(255, 255, 255, 0); background-image: url(&quot;project://database/Assets/Graphics/UI/DatingGameUI/Exports/VictoryOrDefeat/DefeatTitleContainer.png?fileID=2800000&amp;guid=dde323e07dd241b41923f6633b953d25&amp;type=3#DefeatTitleContainer&quot;); -unity-background-scale-mode: stretch-to-fill; margin-bottom: -20px; min-height: auto; -unity-background-image-tint-color: rgba(255, 255, 255, 0.86);">
+            <engine:Label text="错误标题" name="TitleLabel" enable-rich-text="true" data-source-type="MessageDialogModel, Assembly-CSharp" style="font-size: 34px; -unity-text-align: middle-center; -unity-font-style: bold; -unity-font-definition: url(&quot;project://database/Assets/TextMesh%20Pro/Fonts/LiberationSans.ttf?fileID=12800000&amp;guid=e3265ab4bf004d28a9537516768c1c75&amp;type=3#LiberationSans&quot;); align-items: auto; justify-content: flex-end; align-self: auto; align-content: auto; color: rgb(206, 88, 72);">
+                <Bindings>
+                    <engine:DataBinding property="text" data-source-path="Title" binding-mode="ToTarget" />
+                </Bindings>
+            </engine:Label>
+        </engine:VisualElement>
+        <engine:VisualElement style="flex-grow: 1; align-items: stretch; align-self: stretch; background-image: url(&quot;project://database/Assets/Graphics/UI/DatingGameUI/Exports/VictoryOrDefeat/TextContainer.png?fileID=2800000&amp;guid=e1a7507f2610fcb478394d92753e1c04&amp;type=3#TextContainer&quot;); padding-bottom: 50px; padding-top: 40px; margin-top: -20px; padding-right: 45px; padding-left: 45px; font-size: 14px; -unity-background-image-tint-color: rgba(255, 255, 255, 0.86); max-height: none; min-height: auto;">
+            <engine:ScrollView style="max-height: 280px; min-height: 200px; align-self: auto; align-content: auto; justify-content: space-between; align-items: stretch; -unity-text-align: upper-left;">
+                <engine:Label text="1内容错误是件古董标价是20万美元，买家却以为是20万人民币，这就1内容错误是件古董标价是20万美元，买家却以为是20万人民币，这就1内容错误是件古董标价是20万美元，买家却以为是20万人民币，这就" name="MessageLabel" style="width: auto; white-space: pre-wrap; align-self: center; align-content: stretch; align-items: stretch; justify-content: space-around; max-height: none; min-height: 200px; -unity-text-align: middle-left;">
+                    <Bindings>
+                        <engine:DataBinding property="text" data-source-path="Message" data-source-type="MessageDialogModel, Assembly-CSharp" binding-mode="ToTarget" />
+                    </Bindings>
+                </engine:Label>
+            </engine:ScrollView>
+            <engine:VisualElement name="VisualElement" style="flex-grow: 1; flex-direction: row; align-self: center; flex-basis: auto; align-content: auto; align-items: center; justify-content: space-between; height: 0; max-height: none; margin-top: 0; margin-right: 15px; margin-bottom: 0; margin-left: 15px; background-size: 100% 100%;">
+                <engine:Button text="确认" name="ConfirmButton" class="message-button">
+                    <Bindings>
+                        <engine:DataBinding property="text" data-source-path="ConfirmButtonText" data-source-type="MessageDialogModel, Assembly-CSharp" binding-mode="ToTarget" />
+                    </Bindings>
+                </engine:Button>
+                <engine:Button text="取消" name="CancelButton" enabled="true" class="message-button" style="display: flex;">
+                    <Bindings>
+                        <engine:DataBinding property="text" data-source-path="CancelButtonText" data-source-type="MessageDialogModel, Assembly-CSharp" binding-mode="ToTarget" />
+                        <engine:DataBinding property="style.display" data-source-path="CancelButtonDisplayMode" data-source-type="MessageDialogModel, Assembly-CSharp" binding-mode="ToTarget" />
+                    </Bindings>
+                </engine:Button>
+            </engine:VisualElement>
+        </engine:VisualElement>
+        <Bindings>
+            <engine:DataBinding property="style.display" data-source-path="DisplayStyle" data-source-type="MessageDialogModel, Assembly-CSharp" binding-mode="ToTarget" />
+            <engine:DataBinding property="style.opacity" data-source-path="Opacity" data-source-type="MessageDialogModel, Assembly-CSharp" binding-mode="ToTarget" />
+        </Bindings>
+    </engine:VisualElement>
+</engine:UXML>
