@@ -1,0 +1,13 @@
+fastapi[standard]
+python-multipart
+funasr
+# for CUDA 11.8 torch on Linux
+--index-url https://download.pytorch.org/whl/cu118; sys_platform == "linux"
+torch; sys_platform == "linux"
+torchvision; sys_platform == "linux"
+pytorch-lightning; sys_platform == "linux"
+
+# for MPS accelerated torch on Mac
+torch; sys_platform == "darwin"
+torchvision; sys_platform == "darwin"
+pytorch-lightning; sys_platform == "darwin"
