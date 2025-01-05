@@ -31,11 +31,11 @@
 }
 
 .next-button-ani-norm {
-    bottom: 37px;
+    bottom: 30px;
     position: absolute;
     right: 47px;
 }
 
 .next-button-ani-down {
-    bottom: 32px;
+    bottom: 26px;
 }

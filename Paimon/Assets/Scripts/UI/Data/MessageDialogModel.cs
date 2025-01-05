@@ -74,20 +74,21 @@ public class MessageDialogModel : MonoBehaviour
     /// <summary>
     /// 弹出消息框
     /// </summary>
+    /// <param name="title">消息标题</param>
     /// <param name="message">消息内容</param>
     /// <param name="confirmAction">确认按钮的操作</param>
     /// <param name="confirmButtonText">确认按钮文字</param>
     /// <param name="cancelAction">取消按钮的操作</param>
     /// <param name="cancelButtonText">取消按钮的文字</param>
     /// <param name="showCancel">是否显示取消按钮</param>
-    public static void Show(string message, string title, Action<GameObject> confirmAction = null, string confirmButtonText = "确认",
+    public static void Show(string title, string message, Action<GameObject> confirmAction = null, string confirmButtonText = "确认",
         Action<GameObject> cancelAction = null, string cancelButtonText = "取消", bool showCancel = false)
     {
         UnityDispatcher.Invoke(() =>
-        messageDialogModel.ShowInner(message, title, confirmAction, confirmButtonText, cancelAction, cancelButtonText, showCancel));
+        messageDialogModel.ShowInner(title, message, confirmAction, confirmButtonText, cancelAction, cancelButtonText, showCancel));
     }
 
-    private void ShowInner(string message, string title, Action<GameObject> confirmAction = null, string confirmButtonText = "确认",
+    private void ShowInner(string title, string message, Action<GameObject> confirmAction = null, string confirmButtonText = "确认",
     Action<GameObject> cancelAction = null, string cancelButtonText = "取消", bool showCancel = false)
     {
         // 当存在取消操作的时候，显示取消按钮
@@ -114,11 +115,11 @@ public class MessageDialogModel : MonoBehaviour
         Opacity = 0.0f;
         DisplayStyle = DisplayStyle.None; // TODO 这里有点小问题
 
-        if (buttonType==ButtonTypeEnum.Confirm)
+        if (buttonType == ButtonTypeEnum.Confirm)
         {
             ConfirmAction?.Invoke();
         }
-        else if(buttonType==ButtonTypeEnum.Cancel)
+        else if (buttonType == ButtonTypeEnum.Cancel)
         {
             CancelAction?.Invoke();
         }
