@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class DialogueProcedure : ProcedureBase
 {
     private AgentAIManager agentAIManager;
