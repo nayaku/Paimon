@@ -1,13 +1,14 @@
 public class DialogueProcedure : ProcedureBase
 {
     private AgentAIManager agentAIManager;
-    private PaimonController paimonController;
+    private PaimonAgentController paimonController;
 
     public override void EnterProcedure()
     {
         base.EnterProcedure();
         agentAIManager = Global.Instance.AgentAIManagerGO.GetComponent<AgentAIManager>();
-        paimonController = agentAIManager.CreateAgent<PaimonController>();
+        paimonController = agentAIManager.CreateAgent<PaimonAgentController>();
+
     }
 
     public override void ExitProcedure()

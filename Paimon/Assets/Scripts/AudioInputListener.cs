@@ -92,6 +92,7 @@ public class AudioInputListener : MonoBehaviour
             {
                 isStart = true;
                 startPos = Math.Max(0, Microphone.GetPosition(device) - 2 * volumeLength);
+                endPos = startPos;
                 Log.Debug($"当前音量为{volume}>{minVolume}，开始录音！Pos:{startPos}");
 
                 var aiMessage = new ASRMessage(ASRMessageStateEnum.Starting, "", "");
@@ -160,15 +161,16 @@ public class AudioInputListener : MonoBehaviour
             ms.Seek(0, SeekOrigin.Begin);
             bytes = ms.ToArray();
         }
-        //#if DEBUG
-        //        // Debug模型下保存录音数据
-        //        string filePath = Path.Join(Application.persistentDataPath, $"audio_{count}.wav");
-        //        Debug.Log("录音保存路径：" + filePath);
-        //        using (FileStream fs = File.OpenWrite(filePath))
-        //        {
-        //            fs.Write(bytes, 0, bytes.Length);
-        //        }
-        //#endif
+#if DEBUG
+        if (isFinish)
+        {
+            // Debug模型下保存录音数据
+            string filePath = Path.Join(Application.persistentDataPath, $"audio_{count}.wav");
+            Debug.Log("录音保存路径：" + filePath);
+            using FileStream fs = File.OpenWrite(filePath);
+            fs.Write(bytes, 0, bytes.Length);
+        }
+#endif
         // 准备发送到服务器解析
         if (isSending && !isFinish)
         {

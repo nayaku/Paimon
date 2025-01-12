@@ -1,0 +1,103 @@
+# Agent 工具配置项
+
+
+# 本地知识库工具配置项
+search_local_knowledgebase:
+  use: false
+  top_k: 3
+  score_threshold: 2.0
+  conclude_prompt:
+    with_result: "<指令>根据已知信息，简洁和专业的来回答问题。如果无法从中得到答案，请说 \"根据已知信息无法回答该问题\"，不允许在答案中添加编造成分，答案请使用中文。
+      </指令>\n<已知信息>{{ context }}</已知信息>\n<问题>{{ question }}</问题>\n"
+    without_result: "请你根据我的提问回答我的问题:\n{{ question }}\n请注意，你必须在回答结束后强调，你的回答是根据你的经验回答而不是参考资料回答的。\n"
+
+# 搜索引擎工具配置项。推荐自己部署 searx 搜索引擎，国内使用最方便。
+search_internet:
+  use: false
+  search_engine_name: duckduckgo
+  search_engine_config:
+    bing:
+      bing_search_url: https://api.bing.microsoft.com/v7.0/search
+      bing_key: ''
+    metaphor:
+      metaphor_api_key: ''
+      split_result: false
+      chunk_size: 500
+      chunk_overlap: 0
+    duckduckgo: {}
+    searx:
+      host: ''
+      engines: []
+      categories: []
+  top_k: 5
+  verbose: Origin
+  conclude_prompt: "<指令>这是搜索到的互联网信息，请你根据这些信息进行提取并有调理，简洁的回答问题。如果无法从中得到答案，请说 “无法搜索到能回答问题的内容”。
+    </指令>\n<已知信息>{{ context }}</已知信息>\n<问题>\n{{ question }}\n</问题>\n"
+arxiv:
+  use: false
+
+# 心知天气（https://www.seniverse.com/）工具配置项
+weather_check:
+  use: false
+  api_key: ''
+search_youtube:
+  use: false
+wolfram:
+  use: false
+  appid: ''
+
+# numexpr 数学计算工具配置项
+calculate:
+  use: false
+
+# 图片对话工具配置项。该工具依赖 torch，后续将删除。现在 WEBUI 已经支持图片对话功能。
+vqa_processor:
+  use: false
+  model_path: your model path
+  tokenizer_path: your tokenizer path
+  device: cuda:1
+
+# 音频对话工具配置项。该工具依赖 torch，后续将删除。
+aqa_processor:
+  use: false
+  model_path: your model path
+  tokenizer_path: yout tokenizer path
+  device: cuda:2
+
+# 图片生成工具配置项。model 必须是在 model_settings.yaml/MODEL_PLATFORMS 中配置过的。
+text2images:
+  use: false
+  model: sd-turbo
+  size: 256*256
+
+# text2sql使用建议
+# 1、因大模型生成的sql可能与预期有偏差，请务必在测试环境中进行充分测试、评估；
+# 2、生产环境中，对于查询操作，由于不确定查询效率，推荐数据库采用主从数据库架构，让text2sql连接从数据库，防止可能的慢查询影响主业务；
+# 3、对于写操作应保持谨慎，如不需要写操作，设置read_only为True,最好再从数据库层面收回数据库用户的写权限，防止用户通过自然语言对数据库进行修改操作；
+# 4、text2sql与大模型在意图理解、sql转换等方面的能力有关，可切换不同大模型进行测试；
+# 5、数据库表名、字段名应与其实际作用保持一致、容易理解，且应对数据库表名、字段进行详细的备注说明，帮助大模型更好理解数据库结构；
+# 6、若现有数据库表名难于让大模型理解，可配置下面table_comments字段，补充说明某些表的作用。
+text2sql:
+  model_name: qwen-plus
+  use: false
+  sqlalchemy_connect_str: mysql+pymysql://用户名:密码@主机地址/数据库名称
+  read_only: false
+  top_k: 50
+  return_intermediate_steps: true
+  table_names: []
+  table_comments: {}
+
+# 高德地图、天气相关工具配置项。
+amap:
+  use: false
+  api_key: 高德地图 API KEY
+
+# text2promql 使用建议
+# 1、因大模型生成的 promql 可能与预期有偏差, 请务必在测试环境中进行充分测试、评估;
+# 2、text2promql 与大模型在意图理解、metric 选择、promql 转换等方面的能力有关, 可切换不同大模型进行测试;
+# 3、当前仅支持 单prometheus 查询, 后续考虑支持 多prometheus 查询.
+text2promql:
+  use: false
+  prometheus_endpoint: http://127.0.0.1:9090
+  username: ''
+  password: ''

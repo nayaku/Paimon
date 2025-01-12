@@ -26,7 +26,7 @@ public class AgentAIManager : MonoBehaviour
     {
         agentAIControllerList.ForEach((controller) =>
         {
-            StartCoroutine(controller.DoCommand(source, message));
+            controller.DoCommand(source, message);
         });
     }
 }

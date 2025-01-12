@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 
@@ -9,9 +8,8 @@ public class AgentAIController : MonoBehaviour
     /// </summary>
     /// <param name="commandString"></param>
     /// <returns></returns>
-    public virtual IEnumerator DoCommand(Object source, AIMessage aiMessage)
+    public virtual void DoCommand(Object source, AIMessage aiMessage)
     {
-        yield break;
     }
 
 

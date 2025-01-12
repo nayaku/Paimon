@@ -7,6 +7,7 @@ using UnityEngine;
 public class UserSettingData
 {
     public ASRSettingData ASRSettingData { get; set; } = new();
+    public LLMSettingData LLMSettingData { get; set; } = new();
 
     /// <summary>
     /// 保存

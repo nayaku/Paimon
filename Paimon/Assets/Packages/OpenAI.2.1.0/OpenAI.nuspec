@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>OpenAI</id>
+    <version>2.1.0</version>
+    <authors>OpenAI</authors>
+    <icon>OpenAI.png</icon>
+    <readme>README.md</readme>
+    <projectUrl>https://github.com/openai/openai-dotnet/tree/OpenAI_2.1.0</projectUrl>
+    <description>The official .NET library for the OpenAI service API.</description>
+    <releaseNotes>https://github.com/openai/openai-dotnet/blob/OpenAI_2.1.0/CHANGELOG.md</releaseNotes>
+    <tags>OpenAI openai-dotnet ChatGPT Dall-E</tags>
+    <repository type="git" url="https://github.com/openai/openai-dotnet" commit="c046c34ad06f7ca050b2f8044cfc8372d8cf0e76" />
+    <dependencies>
+      <group targetFramework="net6.0">
+        <dependency id="System.ClientModel" version="1.2.1" exclude="Build,Analyzers" />
+        <dependency id="System.Diagnostics.DiagnosticSource" version="6.0.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="System.ClientModel" version="1.2.1" exclude="Build,Analyzers" />
+        <dependency id="System.Diagnostics.DiagnosticSource" version="6.0.1" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>
