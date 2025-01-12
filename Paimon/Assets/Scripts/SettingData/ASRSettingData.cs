@@ -16,7 +16,7 @@ public class ASRSettingData
     /// <summary>
     /// 识别间隔
     /// </summary>
-    public float RecognizeInterval { get; set; } = 0.8f;
+    public float RecognizeInterval { get; set; } = 1.2f;
 
     ///// <summary>
     ///// 不间断聊天

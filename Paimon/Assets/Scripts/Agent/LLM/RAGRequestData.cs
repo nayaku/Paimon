@@ -20,6 +20,5 @@ public class RAGRequestData
     public double Temperature { get; set; } = 0.7;
     public RAGRequestDataExtraBody ExtraBody { get; set; } = new();
     public string PromptName { get; set; } = "default";
-    public string Stop { get; set; } = "\n";
     public int MaxTokens { get; set; } = 240;
 }

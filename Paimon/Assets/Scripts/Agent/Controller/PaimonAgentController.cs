@@ -62,11 +62,11 @@ public class PaimonAgentController : AgentAIController
     private async UniTask DoThinking(string asrMessage)
     {
         paimonAgentState = PaimonAgentState.Thinking;
-        var asrChatMessage = new UserChatMessage(asrMessage);
+        var asrChatMessage = new SystemChatMessage("以下内容来自来自用户语音的结果，其中可能包含语音识别错误，并且没有重建标准符号，你需要结合语境分析：" + asrMessage);
         var resultChatMessage = await lLMCompletion.CompleteChatAsync(asrChatMessage);
         Log.Debug(resultChatMessage);
         var dialogueModel = Global.Instance.DialogueGO.GetComponent<DialogueModel>();
-        dialogueModel.Content = resultChatMessage.Content[0].Text;
+        dialogueModel.Content = resultChatMessage.Content[0].Text.Trim();
     }
 
 }

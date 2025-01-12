@@ -43,7 +43,6 @@ public class LLMCompletion
                 ReturnDirect = false,
             },
             PromptName = "paimon",
-            Stop = "\n"
         };
         var requestDataJson = JsonConvert.SerializeObject(requestData);
         var requestDataJsonBytes = BinaryData.FromString(requestDataJson);

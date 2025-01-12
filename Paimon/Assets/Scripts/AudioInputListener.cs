@@ -95,7 +95,7 @@ public class AudioInputListener : MonoBehaviour
                 endPos = startPos;
                 Log.Debug($"当前音量为{volume}>{minVolume}，开始录音！Pos:{startPos}");
 
-                var aiMessage = new ASRMessage(ASRMessageStateEnum.Starting, "", "");
+                var aiMessage = new ASRMessage(ASRMessageStateEnum.Starting, "");
                 llmAIManager.SendAIMessage(this, aiMessage);
             }
         }
@@ -269,9 +269,8 @@ public class AudioInputListener : MonoBehaviour
 
             var receiveData = JObject.Parse(resp);
             var text = (string)receiveData["text"];
-            var rawText = (string)receiveData["raw_text"];
             var messageState = isFinish ? ASRMessageStateEnum.Finish : ASRMessageStateEnum.Recognizing;
-            var aiMessage = new ASRMessage(messageState, text, rawText);
+            var aiMessage = new ASRMessage(messageState, text);
             llmAIManager.SendAIMessage(this, aiMessage);
         }
         isSending = false;
