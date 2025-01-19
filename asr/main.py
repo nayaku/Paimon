@@ -29,6 +29,7 @@ model = AutoModel(
     # vad_model="fsmn-vad",
     # punc_model="ct-punc",
     # spk_model="cam++",
+    device="cpu"
 )
 # punc_model = AutoModel(model="ct-punc") # 符号补全
 regex = r"<\|.*\|>"

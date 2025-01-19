@@ -106,7 +106,7 @@ public class AudioInputListener : MonoBehaviour
                 prevTime = Time.time;
                 var curPos = Microphone.GetPosition(device);
                 // 每隔一段时间就识别一下，模拟流式识别，反正识别速度很快
-                if (curPos - endPos >= 44100 * recognizeInterval)
+                if (curPos - endPos >= 16000 * recognizeInterval)
                 {
                     endPos = curPos;
                     Recognize(startPos, endPos, false);
@@ -145,7 +145,7 @@ public class AudioInputListener : MonoBehaviour
         if (Microphone.IsRecording(device))
             StopRecord();
         Log.Debug("开始监听麦克风");
-        audioClip = Microphone.Start(device, true, 3000, 44100);
+        audioClip = Microphone.Start(device, true, 3000, 16000);
     }
 
     private void Recognize(int start, int end, bool isFinish)
@@ -251,6 +251,7 @@ public class AudioInputListener : MonoBehaviour
 
         var form = new WWWForm();
         form.AddBinaryData("file", audioData, "file.wav", "audio/wav");
+        form.AddField("lang", "zh");
 
         var url = asrServerUrl + "/api/v1/asr";
         var webRequest = UnityWebRequest.Post(url, form);

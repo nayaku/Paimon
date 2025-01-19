@@ -8,12 +8,10 @@ public class ASRMessage : AIMessage
 {
     public ASRMessageStateEnum ASRMessageState { get; }
     public string Text { get; }
-    public string RawText { get; }
 
-    public ASRMessage(ASRMessageStateEnum aSRMessageState, string text, string rawText)
+    public ASRMessage(ASRMessageStateEnum aSRMessageState, string text)
     {
         ASRMessageState = aSRMessageState;
         Text = text;
-        RawText = rawText;
     }
 }
