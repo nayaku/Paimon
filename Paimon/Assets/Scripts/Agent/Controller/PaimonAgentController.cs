@@ -21,7 +21,7 @@ public class PaimonAgentController : AgentAIController
     [SerializeField]
     private PaimonAgentState paimonAgentState = PaimonAgentState.Idle;
     private AudioSource audioSource;
-    private TextToSpeech textToSpeech=new();
+    private TextToSpeech textToSpeech = new();
 
     void Start()
     {
@@ -29,7 +29,7 @@ public class PaimonAgentController : AgentAIController
         dialogueModel.UserContent = "";
         dialogueModel.Content = "";
         dialogueModel.NextIconDisplayStyle = UnityEngine.UIElements.DisplayStyle.None;
-        
+
 
         // 创建新的AudioSource
         audioSource = gameObject.AddComponent<AudioSource>();
