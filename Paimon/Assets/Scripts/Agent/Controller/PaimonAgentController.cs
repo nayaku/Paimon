@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using OpenAI.Chat;
+using System.Threading;
 using Unity.Logging;
 using UnityEngine;
 
@@ -19,6 +20,8 @@ public class PaimonAgentController : AgentAIController
     [ReadOnly]
     [SerializeField]
     private PaimonAgentState paimonAgentState = PaimonAgentState.Idle;
+    private AudioSource audioSource;
+    private TextToSpeech textToSpeech=new();
 
     void Start()
     {
@@ -26,9 +29,14 @@ public class PaimonAgentController : AgentAIController
         dialogueModel.UserContent = "";
         dialogueModel.Content = "";
         dialogueModel.NextIconDisplayStyle = UnityEngine.UIElements.DisplayStyle.None;
+        
 
-        var audioInputListener = Global.Instance.AudioInputListenerGO.GetComponent<AudioInputListener>();
-        audioInputListener.EnableListen(true);
+        // 创建新的AudioSource
+        audioSource = gameObject.AddComponent<AudioSource>();
+
+        //_ = DoSpeaking("远的传说中，大地上的草木走兽都拥有自己的王国。");
+
+        ToIdle();
     }
 
     /// <summary>
@@ -47,7 +55,7 @@ public class PaimonAgentController : AgentAIController
             DoListening(asrMessage);
             if (asrMessage.ASRMessageState == ASRMessageStateEnum.Finish)
             {
-                DoThinking(asrMessage.Text);
+                _ = DoThinking(asrMessage.Text);
                 //var audioInputListener = Global.Instance.AudioInputListenerGO.GetComponent<AudioInputListener>();
                 //audioInputListener.EnableListen(true);
             }
@@ -59,15 +67,33 @@ public class PaimonAgentController : AgentAIController
         dialogueModel.UserContent = asrMessage.Text;
     }
 
-    private async UniTask DoThinking(string asrMessage)
+    private async UniTaskVoid DoThinking(string asrMessage)
     {
         paimonAgentState = PaimonAgentState.Thinking;
         var asrChatMessage = new SystemChatMessage("以下内容来自来自用户语音的结果，其中可能包含语音识别错误，并且没有重建标准符号，你需要结合语境分析：" + asrMessage);
         var resultChatMessage = await lLMCompletion.CompleteChatAsync(asrChatMessage);
         Log.Debug(resultChatMessage);
         var dialogueModel = Global.Instance.DialogueGO.GetComponent<DialogueModel>();
-        dialogueModel.Content = resultChatMessage.Content[0].Text.Trim();
+        var answer = resultChatMessage.Content[0].Text.Trim();
+        dialogueModel.Content = answer;
+        _ = DoSpeaking(answer);
     }
 
+    private CancellationTokenSource cancellationTokenSource;
+    private async UniTaskVoid DoSpeaking(string text)
+    {
+        paimonAgentState = PaimonAgentState.Speaking;
+        cancellationTokenSource = new();
+        await textToSpeech.TTSAsync(text, audioSource, cancellationTokenSource.Token);
+
+        ToIdle();
+    }
+
+    private void ToIdle()
+    {
+        paimonAgentState = PaimonAgentState.Idle;
+        var audioInputListener = Global.Instance.AudioInputListenerGO.GetComponent<AudioInputListener>();
+        audioInputListener.EnableListen(true);
+    }
 }
 

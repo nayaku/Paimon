@@ -8,6 +8,7 @@ public class UserSettingData
 {
     public ASRSettingData ASRSettingData { get; set; } = new();
     public LLMSettingData LLMSettingData { get; set; } = new();
+    public TTSSettingData TTSSettingData { get; set;} = new();
 
     /// <summary>
     /// 保存

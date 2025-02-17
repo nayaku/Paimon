@@ -7,6 +7,15 @@ conda activate xf
 xinference-local --port 9997
 启动 glm4-chat bge-small-zh-v1.5
 
-# 启动chatchat
+# 启动chatchat(定制)
 conda activate chatchat-dev
 chatchat start -a
+
+# 启动fish-speech
+conda activate fish-speech-new
+HF_ENDPOINT=https://hf-mirror.com python -m tools.api_server \
+    --listen 0.0.0.0:8991 \
+    --llama-checkpoint-path "fish-speech-1.5-yth-lora-2" \
+    --decoder-checkpoint-path "fish-speech-1.5-yth-lora-2/firefly-gan-vq-fsq-8x1024-21hz-generator.pth" \
+    --decoder-config-name firefly_gan_vq \
+    --compile
