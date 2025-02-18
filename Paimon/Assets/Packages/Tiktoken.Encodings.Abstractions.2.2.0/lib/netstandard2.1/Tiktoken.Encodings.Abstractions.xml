@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Tiktoken.Encodings.Abstractions</name>
+    </assembly>
+    <members>
+        <member name="T:Tiktoken.Encodings.ByteArrayComparer">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Tiktoken.Encodings.ByteArrayComparer.Equals(System.Byte[],System.Byte[])">
+            <summary>
+            
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tiktoken.Encodings.ByteArrayComparer.GetHashCode(System.Byte[])">
+            <summary>
+            
+            </summary>
+            <param name="obj"></param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="T:Tiktoken.Encodings.Encoding">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Tiktoken.Encodings.Encoding.Name">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Tiktoken.Encodings.Encoding.Patterns">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Tiktoken.Encodings.Encoding.Pattern">
+            <summary>
+            Regex pattern
+            </summary>
+        </member>
+        <member name="P:Tiktoken.Encodings.Encoding.MergeableRanks">
+            <summary>
+            tiktoken file
+            </summary>
+        </member>
+        <member name="P:Tiktoken.Encodings.Encoding.SpecialTokens">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Tiktoken.Encodings.Encoding.#ctor(System.String,System.Collections.Generic.IReadOnlyList{System.String},System.Collections.Generic.IReadOnlyDictionary{System.Byte[],System.Int32},System.Collections.Generic.IReadOnlyDictionary{System.String,System.Int32})">
+            <summary>
+            
+            </summary>
+            <param name="name"></param>
+            <param name="patterns"></param>
+            <param name="mergeableRanks"></param>
+            <param name="specialTokens"></param>
+        </member>
+        <member name="T:Tiktoken.Encodings.EncodingConstants">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tiktoken.Encodings.EncodingConstants.EndOfText">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tiktoken.Encodings.EncodingConstants.FimPrefix">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tiktoken.Encodings.EncodingConstants.FimMiddle">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tiktoken.Encodings.EncodingConstants.FimSuffix">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tiktoken.Encodings.EncodingConstants.EndOfPrompt">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tiktoken.Encodings.EncodingLoader">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Tiktoken.Encodings.EncodingLoader.LoadEncodingFromManifestResource(System.Reflection.Assembly,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="assembly"></param>
+            <param name="name"></param>
+            <returns></returns>
+            <exception cref="T:System.InvalidOperationException"></exception>
+            <exception cref="T:System.FormatException"></exception>
+        </member>
+        <member name="M:Tiktoken.Encodings.EncodingLoader.LoadEncodingFromLines(System.Collections.Generic.IReadOnlyList{System.String},System.String)">
+            <summary>
+            
+            </summary>
+            <param name="lines"></param>
+            <param name="name"></param>
+            <returns></returns>
+            <exception cref="T:System.InvalidOperationException"></exception>
+            <exception cref="T:System.FormatException"></exception>
+        </member>
+    </members>
+</doc>

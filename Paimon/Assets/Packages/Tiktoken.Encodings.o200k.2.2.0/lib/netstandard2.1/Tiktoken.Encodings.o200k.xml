@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Tiktoken.Encodings.o200k</name>
+    </assembly>
+    <members>
+        <member name="T:Tiktoken.Encodings.O200KBase">
+            <inheritdoc />
+        </member>
+        <member name="M:Tiktoken.Encodings.O200KBase.#ctor">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>

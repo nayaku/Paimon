@@ -6,24 +6,52 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
+using Tiktoken;
+using Tiktoken.Encodings;
+using Unity.Logging;
 using UnityEngine;
 
 
 public class LLMCompletion
 {
     [SerializeField]
+    [ReadOnly]
     private List<ChatMessage> messages = new();
 
+    [SerializeField]
+    [ReadOnly]
+    private List<int> messageTokenCount = new();
+
+    /// <summary>
+    /// 添加对话内容
+    /// </summary>
+    /// <param name="message"></param>
+    public void AddMessage(ChatMessage message)
+    {
+        messages.Add(message);
+        var encoder = new Encoder(new O200KBase());
+        var numberOfTokens = encoder.CountTokens(message.Content[0].Text);
+        Log.Debug($"Token {numberOfTokens}");
+        messageTokenCount.Add(numberOfTokens);
+    }
+
+    /// <summary>
+    /// 补全对话
+    /// </summary>
+    /// <param name="chatMessage"></param>
+    /// <returns></returns>
     public async UniTask<ChatMessage> CompleteChatAsync(ChatMessage chatMessage)
     {
-        messages.Add(chatMessage);
+        AddMessage(chatMessage);
+        RemoveOldMessage();
 
         var llmSettingData = UserSettingData.Instance.LLMSettingData;
         var options = new OpenAIClientOptions
         {
             Endpoint = new Uri($"{llmSettingData.Url}/{llmSettingData.Mode}/{llmSettingData.SampleName}"),
-            //NetworkTimeout = TimeSpan.FromSeconds(10),
+            NetworkTimeout = TimeSpan.FromSeconds(300),
             RetryPolicy = new ClientRetryPolicy(4),
             Transport = new HttpClientPipelineTransport(new System.Net.Http.HttpClient(new LoggingHandler()))
         };
@@ -60,6 +88,24 @@ public class LLMCompletion
         var resultChatMessage = new AssistantChatMessage(chatCompletion);
         messages.Add(resultChatMessage);
         return resultChatMessage;
+    }
+
+    private void RemoveOldMessage()
+    {
+        var llmSettingData = UserSettingData.Instance.LLMSettingData;
+        var totalTokenNum = messageTokenCount.Sum();
+        int delNum = 0;
+        while (totalTokenNum > llmSettingData.MaxTokenNum)
+        {
+            totalTokenNum -= messageTokenCount[delNum];
+            delNum++;
+        }
+        if (delNum > 0)
+        {
+            Log.Debug($"超过最大Token数，删除{delNum}个历史对话。");
+            messages.RemoveRange(0, delNum);
+            messageTokenCount.RemoveRange(0, delNum);
+        }
     }
 }
 

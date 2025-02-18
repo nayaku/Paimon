@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Tiktoken</name>
+    </assembly>
+    <members>
+        <member name="T:Tiktoken.ModelToEncoder">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Tiktoken.ModelToEncoder.For(System.String)">
+            <summary>
+            Returns encoder by model name.
+            </summary>
+            <param name="modelName">gpt-3.5-turbo</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tiktoken.ModelToEncoder.TryFor(System.String)">
+            <summary>
+            Returns encoder by model name or null.
+            </summary>
+            <param name="modelName">gpt-3.5-turbo</param>
+            <returns></returns>
+        </member>
+        <member name="T:Tiktoken.ModelToEncoding">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Tiktoken.ModelToEncoding.TryFor(System.String)">
+            <summary>
+            Returns encoding by model name or null.
+            </summary>
+            <param name="modelName">gpt-4 gpt-3.5-turbo ...</param>
+            <exception cref="T:System.ArgumentException"></exception>
+            <returns></returns>
+        </member>
+        <member name="M:Tiktoken.ModelToEncoding.For(System.String)">
+            <summary>
+            Returns encoding by model name or throws exception.
+            </summary>
+            <param name="modelName">gpt-4 gpt-3.5-turbo ...</param>
+            <exception cref="T:System.ArgumentException"></exception>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

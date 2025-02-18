@@ -19,5 +19,10 @@ public class LLMSettingData
     /// 模型名
     /// </summary>
     public string Model { get; set; } = "glm4-chat";
+
+    /// <summary>
+    /// 最大Token数
+    /// </summary>
+    public int MaxTokenNum { get; set; } = 512;
 }
 
