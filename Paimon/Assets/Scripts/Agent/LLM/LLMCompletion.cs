@@ -35,6 +35,7 @@ public class LLMCompletion
         var numberOfTokens = encoder.CountTokens(message.Content[0].Text);
         Log.Debug($"Token {numberOfTokens}");
         messageTokenCount.Add(numberOfTokens);
+        RemoveOldMessage();
     }
 
     /// <summary>
@@ -86,7 +87,8 @@ public class LLMCompletion
         var completion = BinaryData.FromString(element.GetString());
         var chatCompletion = ModelReaderWriter.Read<ChatCompletion>(completion);
         var resultChatMessage = new AssistantChatMessage(chatCompletion);
-        messages.Add(resultChatMessage);
+        //messages.Add(resultChatMessage);
+        AddMessage(resultChatMessage);
         return resultChatMessage;
     }
 
@@ -106,6 +108,7 @@ public class LLMCompletion
             messages.RemoveRange(0, delNum);
             messageTokenCount.RemoveRange(0, delNum);
         }
+        Debug.Assert(messages.Count == messageTokenCount.Count);
     }
 }
 
