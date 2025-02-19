@@ -55,7 +55,7 @@ public class PaimonAgentController : AgentAIController
             DoListening(asrMessage);
             if (asrMessage.ASRMessageState == ASRMessageStateEnum.Finish)
             {
-                _ = DoThinking(asrMessage.Text);
+                DoThinking(asrMessage.Text).Forget();
                 //var audioInputListener = Global.Instance.AudioInputListenerGO.GetComponent<AudioInputListener>();
                 //audioInputListener.EnableListen(true);
             }
@@ -76,7 +76,7 @@ public class PaimonAgentController : AgentAIController
         var dialogueModel = Global.Instance.DialogueGO.GetComponent<DialogueModel>();
         var answer = resultChatMessage.Content[0].Text.Trim();
         dialogueModel.Content = answer;
-        _ = DoSpeaking(answer);
+        DoSpeaking(answer).Forget();
     }
 
     private CancellationTokenSource cancellationTokenSource;
