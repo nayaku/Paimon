@@ -1,6 +1,7 @@
 # 启动asr
 cd asr
-... 使用Pycharm启动
+conda activate asr
+uvicorn main:app
 
 # xinference
 conda activate xf

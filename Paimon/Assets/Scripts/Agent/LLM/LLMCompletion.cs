@@ -8,6 +8,8 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
 using Tiktoken;
 using Tiktoken.Encodings;
 using Unity.Logging;
@@ -43,7 +45,7 @@ public class LLMCompletion
     /// </summary>
     /// <param name="chatMessage"></param>
     /// <returns></returns>
-    public async UniTask<ChatMessage> CompleteChatAsync(ChatMessage chatMessage)
+    public async Task<ChatMessage> CompleteChatAsync(ChatMessage chatMessage)
     {
         AddMessage(chatMessage);
         RemoveOldMessage();
@@ -78,7 +80,9 @@ public class LLMCompletion
         using var content = BinaryContent.Create(requestDataJsonBytes);
 
         // 请求
+        //TimeUtil.LogDebugTimestamp("发送前线程ID:" + Thread.CurrentThread.ManagedThreadId);
         var clientResult = await client.CompleteChatAsync(content);
+        //TimeUtil.LogDebugTimestamp("发送后线程ID" + Thread.CurrentThread.ManagedThreadId);
         var response = clientResult.GetRawResponse();
         using var jsonDocument = JsonDocument.Parse(response.Content);
         var element = jsonDocument.RootElement;

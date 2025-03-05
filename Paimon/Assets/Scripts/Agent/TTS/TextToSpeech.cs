@@ -149,7 +149,7 @@ public class TextToSpeech
                 var count = await stream.ReadAsync(memory, cancellationToken);
                 if (count == 0)
                     break;
-                TimeUtil.LogDebugTimestamp($"从steam中获得{count}字节。");
+                //TimeUtil.LogDebugTimestamp($"从steam中获得{count}字节。");
                 pipeWriter.Advance(count);
                 var result = await pipeWriter.FlushAsync(); // 这里应该不会堵塞
                 if (result.IsCompleted)

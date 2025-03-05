@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using OpenAI.Chat;
 using System.Threading;
+using System.Threading.Tasks;
 using Unity.Logging;
 using UnityEngine;
 
@@ -71,7 +72,7 @@ public class PaimonAgentController : AgentAIController
     {
         paimonAgentState = PaimonAgentState.Thinking;
         var asrChatMessage = new SystemChatMessage("以下内容来自来自用户语音的结果，其中可能包含语音识别错误，并且没有重建标准符号，你需要结合语境分析：" + asrMessage);
-        var resultChatMessage = await lLMCompletion.CompleteChatAsync(asrChatMessage);
+        var resultChatMessage = await Task.Run(() => lLMCompletion.CompleteChatAsync(asrChatMessage));
         Log.Debug(resultChatMessage);
         var dialogueModel = Global.Instance.DialogueGO.GetComponent<DialogueModel>();
         var answer = resultChatMessage.Content[0].Text.Trim();
