@@ -8,6 +8,7 @@ public class RAGRequestDataExtraBody
 {
     public int TopK { get; set; } = 3;
     public double ScoreThreshold { get; set; } = 2.0;
+    public string PromptName { get; set; } = "default";
     public bool ReturnDirect { get; set; } = true;
 }
 [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy), ItemNullValueHandling = NullValueHandling.Ignore)]

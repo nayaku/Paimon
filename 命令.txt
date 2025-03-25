@@ -12,7 +12,8 @@ n_batch 32
 
 # 启动chatchat(定制)
 conda activate chatchat-dev
-chatchat start -a
+chatchat start --api # 只启动API
+#chatchat start -a
 
 # 启动fish-speech
 conda activate fish-speech-new

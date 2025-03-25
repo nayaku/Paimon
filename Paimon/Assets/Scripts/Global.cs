@@ -13,4 +13,12 @@ public class Global : MonoBehaviour
     {
         Instance = this;
     }
+
+    /// <summary>
+    /// ÉèÖÃÄ¬ÈÏÖ¡ÂÊ
+    /// </summary>
+    private void SetDefaultFrameRate()
+    {
+        Application.targetFrameRate = 60;
+    }
 }

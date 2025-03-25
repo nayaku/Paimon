@@ -1,28 +1,25 @@
-using Cysharp.Threading.Tasks;
 using OpenAI.Chat;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Linq;
 using Unity.Logging;
 using UnityEngine;
+
+// ReSharper disable All
 
 
 public enum PaimonAgentState
 {
     Idle,
     Listening,
-    Thinking,
+    ThinkingAndSpeaking,
     Speaking
 }
 
 public class PaimonAgentController : AgentAIController
 {
     private DialogueModel dialogueModel;
-    private LLMCompletion lLMCompletion = new();
-    [ReadOnly]
-    [SerializeField]
-    private PaimonAgentState paimonAgentState = PaimonAgentState.Idle;
+    private LLMCompletion llmCompletion;
+    [ReadOnly][SerializeField] private PaimonAgentState paimonAgentState = PaimonAgentState.Idle;
     private AudioSource audioSource;
-    private TextToSpeech textToSpeech = new();
 
     void Start()
     {
@@ -31,11 +28,13 @@ public class PaimonAgentController : AgentAIController
         dialogueModel.Content = "";
         dialogueModel.NextIconDisplayStyle = UnityEngine.UIElements.DisplayStyle.None;
 
-
         // 创建新的AudioSource
         audioSource = gameObject.AddComponent<AudioSource>();
 
         //_ = DoSpeaking("远的传说中，大地上的草木走兽都拥有自己的王国。");
+        var llmSettingData = UserSettingData.Instance.LLMSettingData;
+        var systemPrompt = llmSettingData.SystemPrompt;
+        llmCompletion = new LLMCompletion(systemPrompt);
 
         ToIdle();
     }
@@ -56,45 +55,84 @@ public class PaimonAgentController : AgentAIController
             DoListening(asrMessage);
             if (asrMessage.ASRMessageState == ASRMessageStateEnum.Finish)
             {
-                DoThinking(asrMessage.Text).Forget();
-                //var audioInputListener = Global.Instance.AudioInputListenerGO.GetComponent<AudioInputListener>();
-                //audioInputListener.EnableListen(true);
+                DoThinkingAndSpeakingAsync(asrMessage.Text);
             }
         }
     }
 
     private void DoListening(ASRMessage asrMessage)
     {
+        paimonAgentState = PaimonAgentState.Listening;
         dialogueModel.UserContent = asrMessage.Text;
+        dialogueModel.NextIconDisplayStyle = UnityEngine.UIElements.DisplayStyle.None;
     }
 
-    private async UniTaskVoid DoThinking(string asrMessage)
+    private async void DoThinkingAndSpeakingAsync(string asrMessage)
     {
-        paimonAgentState = PaimonAgentState.Thinking;
-        var asrChatMessage = new SystemChatMessage("以下内容来自来自用户语音的结果，其中可能包含语音识别错误，并且没有重建标准符号，你需要结合语境分析：" + asrMessage);
-        var resultChatMessage = await Task.Run(() => lLMCompletion.CompleteChatAsync(asrChatMessage));
-        Log.Debug(resultChatMessage);
-        var dialogueModel = Global.Instance.DialogueGO.GetComponent<DialogueModel>();
-        var answer = resultChatMessage.Content[0].Text.Trim();
-        dialogueModel.Content = answer;
-        DoSpeaking(answer).Forget();
-    }
+        Log.Debug("DoThinkingAndSpeakingAsync");
+        var textToSpeech = new TextToSpeech(audioPlayer, ToIdle);
+        textToSpeech.StartTTSAsync();
+        try
+        {
+            var watcher = new DebugStopWatcher();
+            paimonAgentState = PaimonAgentState.ThinkingAndSpeaking;
+            var asrChatMessage = new UserChatMessage(asrMessage);
+            var ttsSettingData = UserSettingData.Instance.TTSSettingData;
+            var dialogueModel = Global.Instance.DialogueGO.GetComponent<DialogueModel>();
+            var answer = "";
+            var unReadAnswer = "";
+            var firstStep = 0;
+            // 获取LLM的回复
+            await foreach (var completionUpdate in llmCompletion.CompleteChatStreamAsync(asrChatMessage))
+            {
+                if (completionUpdate.ContentUpdate.Count > 0)
+                {
+                    if (firstStep == 0)
+                    {
+                        watcher.Interrupt("首次接收文本！");
+                        firstStep = 1;
+                    }
+                    answer += completionUpdate.ContentUpdate[0].Text;
+                    unReadAnswer += completionUpdate.ContentUpdate[0].Text;
+                    var (needSplitText, answerList) =
+                        TextSplitter.NeedSplitText(unReadAnswer, ttsSettingData.ChunkLength);
+                    // 超过最大长度，准备语音生成
+                    if (needSplitText)
+                    {
+                        if (firstStep == 1)
+                        {
+                            watcher.Interrupt("首次准备转换文本！");
+                            firstStep = 2;
+                        }
+                        var readAnswer = answerList[0];
+                        unReadAnswer = string.Join("", answerList.Skip(1));
+                        textToSpeech.AddText(readAnswer);
+                    }
+                    dialogueModel.Content = answer;
+                }
+            }
+            // 生成剩下的文本
+            unReadAnswer = TextCleaner.CleanText(unReadAnswer);
+            textToSpeech.AddText(unReadAnswer);
 
-    private CancellationTokenSource cancellationTokenSource;
-    private async UniTaskVoid DoSpeaking(string text)
-    {
-        paimonAgentState = PaimonAgentState.Speaking;
-        cancellationTokenSource = new();
-        await textToSpeech.TTSAsync(text, audioSource, cancellationTokenSource.Token);
-
-        ToIdle();
+            watcher.Interrupt("生成文本完成");
+            await textToSpeech.EndTTSAsync();
+        }
+        catch
+        {
+            await textToSpeech.CancelAsync();
+            throw;
+        }
     }
 
     private void ToIdle()
     {
+        Debug.Log("ToIdel");
         paimonAgentState = PaimonAgentState.Idle;
         var audioInputListener = Global.Instance.AudioInputListenerGO.GetComponent<AudioInputListener>();
         audioInputListener.EnableListen(true);
+
+        dialogueModel.NextIconDisplayStyle = UnityEngine.UIElements.DisplayStyle.Flex;
     }
 }
 

@@ -1,53 +1,111 @@
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Nito.AsyncEx;
 using System;
-using System.Buffers;
+using System.Collections.Generic;
 using System.IO;
-using System.IO.Pipelines;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using Unity.Logging;
-using UnityEngine;
-
 
 public class TextToSpeech
 {
-    public async Awaitable TTSAsync(string text, AudioSource audioSource, CancellationToken cancellationToken)
-    {
-        // 准备
-        using var client = CreateHttpClient();
-        using var request = CreateRequest(text);
+    private Action onPlayFinishAction;
+    private AudioPlayer audioPlayer;
 
-        // 发送请求并获取响应流
-        TimeUtil.LogDebugTimestamp("请求发送");
-        using var stream = await SendAsync(client, request, cancellationToken);
-        if (stream != null)
+    private CancellationTokenSource cancellationTokenSource;
+    private List<string> needProcessText = new();
+    private bool isEndText = false;
+    private AsyncAutoResetEvent workWaitHandle = new(false);
+    private AsyncAutoResetEvent workDoneWaitHandle = new(false);
+    private Task loopTask = null;
+
+    public TextToSpeech(AudioPlayer audioPlayer, Action onPlayFinishAction = null)
+    {
+        this.audioPlayer = audioPlayer;
+        this.onPlayFinishAction = onPlayFinishAction;
+    }
+
+    public async void StartTTSAsync()
+    {
+        await CancelAsync();
+        cancellationTokenSource = new();
+        isEndText = false;
+        loopTask = Task.Run(LoopAsync);
+    }
+
+    public void AddText(string text)
+    {
+        Log.Debug("添加文本：" + text);
+        lock (needProcessText)
         {
-            TimeUtil.LogDebugTimestamp("开始读取Stream");
-            var pipeOptions = new PipeOptions(pauseWriterThreshold: 0); // 不暂停，一直可写
-            var pipe = new Pipe(pipeOptions);
-            // 持续从流读数据
-            var readTask = ReadStreamAsync(stream, pipe.Writer, cancellationToken);
-            // 边下边播
-            var playTask = PlayAudioAsync(audioSource, pipe.Reader, cancellationToken);
-            await (playTask, readTask);
+            needProcessText.Add(text);
+        }
+        workWaitHandle.Set();
+    }
+
+    public async Task EndTTSAsync()
+    {
+        isEndText = true;
+        workWaitHandle.Set();
+        await workDoneWaitHandle.WaitAsync();
+    }
+
+    public async Task CancelAsync()
+    {
+        if (loopTask != null)
+        {
+            cancellationTokenSource?.Cancel();
+            workDoneWaitHandle.Set();
+            await EndTTSAsync();
         }
     }
 
     /// <summary>
-    /// 创建Http客户端
+    /// 循环处理
     /// </summary>
-    /// <returns></returns>
-    private HttpClient CreateHttpClient()
+    /// <param name="cancellationToken"></param>
+    private async void LoopAsync()
     {
-        // 初始化Http
-        var httpClientHandler = new HttpClientHandler();
-        var client = new HttpClient(httpClientHandler);
-        return client;
+        while (true)
+        {
+            await workWaitHandle.WaitAsync();
+            if (cancellationTokenSource.Token.IsCancellationRequested)
+                break;
+            string text;
+            lock (needProcessText)
+            {
+                if (needProcessText.Count == 0)
+                    continue;
+                text = string.Join("", needProcessText);
+                needProcessText.Clear();
+            }
+            await _TTSAsync(text, audioPlayer, needProcessText.Count == 0 && isEndText, cancellationTokenSource.Token);
+            if (needProcessText.Count == 0 && isEndText)
+                break;
+        }
+        workDoneWaitHandle.Set();
+    }
+
+    private async Task _TTSAsync(string text, AudioPlayer audioPlayer, bool isFinish,
+        CancellationToken cancellationToken = default)
+    {
+        Log.Debug("发送文本：" + text);
+        // 准备
+        using var client = new HttpClient();
+        using var request = CreateRequest(text);
+
+        // 发送请求并获取响应流
+        TimeUtil.LogDebugTimestamp("请求发送");
+        await using var stream = await SendAsync(client, request, cancellationToken);
+        if (stream == null)
+            return;
+        TimeUtil.LogDebugTimestamp("开始读取Stream");
+        await ReadStreamAsync(stream, audioPlayer, isFinish, cancellationToken);
     }
 
     /// <summary>
@@ -68,14 +126,12 @@ public class TextToSpeech
             Format = TTSRequestFormatEnum.Wav,
             UseMemoryCache = UseMemoryCacheEnum.On,
             Streaming = true,
-            Temperature = 0.6
+            Temperature = 0.6,
+            ChunkLength = ttsSettingData.ChunkLength,
         };
         // 转换为Json
         var json = JsonConvert.SerializeObject(ttsRequest);
-        var request = new HttpRequestMessage(HttpMethod.Post, ttsSettingData.Url)
-        {
-            Content = new StringContent(json)
-        };
+        var request = new HttpRequestMessage(HttpMethod.Post, ttsSettingData.Url) { Content = new StringContent(json) };
         request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
         return request;
     }
@@ -87,7 +143,8 @@ public class TextToSpeech
     /// <param name="requestMessage"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    private async UniTask<Stream> SendAsync(HttpClient client, HttpRequestMessage requestMessage, CancellationToken cancellationToken)
+    private async UniTask<Stream> SendAsync(HttpClient client, HttpRequestMessage requestMessage,
+        CancellationToken cancellationToken = default)
     {
         try
         {
@@ -130,30 +187,54 @@ public class TextToSpeech
     }
 
     /// <summary>
+    /// 转换PCM格式为AudioData
+    /// </summary>
+    /// <param name="pcmData"></param>
+    /// <returns></returns>
+    private float[] ConvertPcmToAudioData(byte[] pcmData, int length)
+    {
+        int sampleCount = length / 2; // 每个样本为 2 字节
+        float[] floatSamples = new float[sampleCount];
+        // 转换
+        for (int i = 0; i < sampleCount; i++)
+        {
+            short sample = BitConverter.ToInt16(pcmData, i * 2);
+            floatSamples[i] = sample / (float)short.MaxValue;
+        }
+
+        return floatSamples;
+    }
+
+    /// <summary>
     /// 从Stream中读取数据
     /// </summary>
     /// <param name="stream"></param>
     /// <param name="pipeWriter"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    private async UniTask ReadStreamAsync(Stream stream, PipeWriter pipeWriter, CancellationToken cancellationToken)
+    private async Task ReadStreamAsync(Stream stream, AudioPlayer audioPlayer,
+        bool isFinish, CancellationToken cancellationToken = default)
     {
-        await Awaitable.BackgroundThreadAsync();
-        const int bufferSize = 10240;
+        const int bufferSize = 44100 * 10;
+        var offset = 0;
+        var buff = new byte[bufferSize];
         try
         {
             while (true)
             {
-                var memory = pipeWriter.GetMemory(bufferSize);
-                //TimeUtil.LogDebugTimestamp($"等待stream。。。");
-                var count = await stream.ReadAsync(memory, cancellationToken);
+                var count = await stream.ReadAsync(buff, offset, bufferSize - offset, cancellationToken);
                 if (count == 0)
                     break;
-                //TimeUtil.LogDebugTimestamp($"从steam中获得{count}字节。");
-                pipeWriter.Advance(count);
-                var result = await pipeWriter.FlushAsync(); // 这里应该不会堵塞
-                if (result.IsCompleted)
-                    break;
+                //Debug.Assert(count % 2 != 0); // 应该所有数据均为short（2的倍数）
+                var audioData = ConvertPcmToAudioData(buff, offset + count);
+                offset = (offset + count) - audioData.Length * 2;
+                //Debug.Assert(offset == 0 || offset == 1);
+                audioPlayer.Write(audioData);
+            }
+            if (isFinish)
+            {
+                if (onPlayFinishAction != null)
+                    audioPlayer.SetPlayFinishAction(onPlayFinishAction);
             }
         }
         catch (TaskCanceledException ex)
@@ -165,38 +246,7 @@ public class TextToSpeech
                 Log.Error($"写入流被取消: {ex.Message}\n{ex.InnerException}");
             }
         }
-        await pipeWriter.CompleteAsync();
-        TimeUtil.LogDebugTimestamp("全部Stream流读取完毕");
-    }
 
-    /// <summary>
-    /// 播放音频
-    /// </summary>
-    /// <param name="pipeReader"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    private async UniTask PlayAudioAsync(AudioSource audioSource, PipeReader pipeReader, CancellationToken cancellationToken)
-    {
-        var pcmPlayer = new PCMPlayer(audioSource);
-        while (true)
-        {
-            // 获取缓冲
-            var result = await pipeReader.ReadAsync(cancellationToken);
-            var buffer = result.Buffer;
-            if (cancellationToken.IsCancellationRequested)
-            {
-                TimeUtil.LogDebugTimestamp("播放取消");
-                break;
-            }
-            var bytes = buffer.ToArray();
-            await pcmPlayer.WriteAsync(bytes);
-            pipeReader.AdvanceTo(buffer.GetPosition(bytes.Length));
-            // 读取完成
-            if (result.IsCompleted)
-                break;
-        }
-        await pipeReader.CompleteAsync();
-        await pcmPlayer.FlushAsync();
-        TimeUtil.LogDebugTimestamp("播放结束");
+        TimeUtil.LogDebugTimestamp("全部Stream流读取完毕");
     }
 }
