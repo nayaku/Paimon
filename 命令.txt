@@ -5,7 +5,8 @@ uvicorn main:app
 
 # xinference
 conda activate xf
-xinference-local --port 9997
+USE_XLLAMACPP=1 xinference-local --port 9997
+LD_LIBRARY_PATH="/usr/lib/x86_64-linux-gnu"  xinference-local --port 9997
 启动 glm4-chat bge-small-zh-v1.5
 glm4 n_ctx 2k 或者4k
 n_batch 32
